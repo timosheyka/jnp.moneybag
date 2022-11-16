@@ -113,7 +113,6 @@ const Moneybag Livre = Moneybag(1, 0, 0);
 const Moneybag Solidus = Moneybag(0, 1, 0);
 const Moneybag Denier = Moneybag(0, 0, 1);
 
-
 // żeby działało Moneybag * int (idk czy jest jakiś lepszy sposób)
 Moneybag operator *(const uint64_t c, const Moneybag &m) {
 	return Moneybag(m.livre_number() * c,  m.solidus_number() * c, m.denier_number() * c);
