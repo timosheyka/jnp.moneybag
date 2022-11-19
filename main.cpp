@@ -106,11 +106,11 @@ public:
     std::string toString() const {
 		std::string res = "(" +
                 std::to_string(livre) +
-                (livre == 1 ? "livr, " : " livres, ") +
+                    (livre == 1 ? "livr, " : " livres, ") +
                 std::to_string(solidus) +
-                (solidus == 1 ? "solidus, " : " soliduses, ") +
+                    (solidus == 1 ? "solidus, " : " soliduses, ") +
 		        std::to_string(denier) +
-                (denier == 1 ? "denier)" : " deniers)");
+                    (denier == 1 ? "denier)" : " deniers)");
 		return res;
 	}
     
