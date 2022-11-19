@@ -54,7 +54,7 @@ public:
         return *this;
     }
     
-	constexpr Moneybag operator +(const Moneybag &m) const {
+	constexpr Moneybag operator+(const Moneybag &m) const {
 		return Moneybag(safe_sum(livre, m.livre), 
                         safe_sum(solidus, m.solidus),
                         safe_sum(denier, m.denier));
@@ -67,7 +67,7 @@ public:
         return *this;
     }
     
-	constexpr Moneybag operator -(const Moneybag &m) const {
+	constexpr Moneybag operator-(const Moneybag &m) const {
 		return Moneybag(safe_dif(livre, m.livre), 
                         safe_dif(solidus, m.solidus), 
                         safe_dif(denier, m.denier));
@@ -80,7 +80,7 @@ public:
         return *this;
     }
     
-	constexpr Moneybag operator *(const uint64_t c) const {
+	constexpr Moneybag operator*(const uint64_t c) const {
 		return Moneybag(safe_prod(livre, c),
                         safe_prod(solidus, c), 
                         safe_prod(denier, c));
@@ -94,7 +94,7 @@ public:
         return *this;
     }
     
-	constexpr bool operator ==(const Moneybag &m) const{
+	constexpr bool operator==(const Moneybag &m) const{
 		if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
 			return true;
 		}
@@ -165,7 +165,7 @@ constexpr Moneybag Livre{1, 0, 0};
 constexpr Moneybag Solidus{0, 1, 0};
 constexpr Moneybag Denier{0, 0, 1};
 
-constexpr Moneybag operator *(const uint64_t c, const Moneybag m) {
+constexpr Moneybag operator*(const uint64_t c, const Moneybag m) {
 	return Moneybag(m.livre_number() * c,  m.solidus_number() * c, m.denier_number() * c);
 }
 
@@ -216,7 +216,7 @@ public:
         }
     }
     
-    constexpr bool operator ==(const Value &v) const{
+    constexpr bool operator==(const Value &v) const{
 		if (val == v.val) {
 			return true;
 		}
@@ -225,7 +225,7 @@ public:
 		}
 	}
     
-    constexpr bool operator ==(uint64_t v) {
+    constexpr bool operator==(uint64_t v) {
 		if (val == v) {
 			return true;
 		}
