@@ -3,8 +3,8 @@
  * JNP 2022/2023, task 3
  *
  * Authors :
- *  Maja Tkaczyk mt438772
- *  Tsimafei Lukashevich tl439668
+ * Maja Tkaczyk mt438772
+ * Tsimafei Lukashevich tl439668
  */
 
 #ifndef MONEYBAG_H
