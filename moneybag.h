@@ -238,4 +238,5 @@ public:
         return std::to_string(val);
     }
 };
+
 #endif /* MONEYBAG_H */
