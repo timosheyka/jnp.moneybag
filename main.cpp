@@ -162,7 +162,7 @@ public:
     
     constexpr Value(uint64_t v): val(v){}
 
-   constexpr Value(const Moneybag &m)
+    constexpr Value(const Moneybag &m)
     : val(Moneybag::safe_sum (
                 Moneybag::safe_sum (
                       Moneybag::safe_prod (240, m.livre_number()),
