@@ -14,7 +14,6 @@ private:
     coin_number_t solidus;
     coin_number_t denier;	
 public: 
-    // KONSTRUKTORY I GETTERY
 	constexpr Moneybag(coin_number_t l, coin_number_t s, coin_number_t d) 
 	    : livre(l), solidus(s), denier(d){}
 	    
@@ -25,7 +24,6 @@ public:
     constexpr int solidus_number() const { return solidus; }
     constexpr int denier_number() const { return denier; }
     
-    // OPERATORY
 	explicit operator bool() const {
 		if (livre == 0 && denier == 0 && solidus == 0) {
 			return false;
@@ -106,7 +104,6 @@ public:
 		}
     }
     
-    // TO_STRING
     std::string toString() const {
 		std::string res = "(" +
                 std::to_string(livre) +
@@ -154,8 +151,6 @@ constexpr Moneybag Livre{1, 0, 0};
 constexpr Moneybag Solidus{0, 1, 0};
 constexpr Moneybag Denier{0, 0, 1};
 
-
-// żeby działało Moneybag * int (idk czy jest jakiś lepszy sposób)
 constexpr Moneybag operator *(const uint64_t c, const Moneybag m) {
 	return Moneybag(m.livre_number() * c,  m.solidus_number() * c, m.denier_number() * c);
 }
