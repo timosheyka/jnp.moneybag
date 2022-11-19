@@ -112,10 +112,11 @@ public:
 	}
     
     constexpr coin_number_t safe_sum(const coin_number_t a, const coin_number_t b) const {
-        if (a + b > std::max(a, b)) {
+        coin_number_t sum = a + b;
+        if (sum < std::max(a, b)) {
             throw std::out_of_range("");
         }
-        return a + b;
+        return sum;
     }
     
     constexpr coin_number_t safe_dif(const coin_number_t a, const coin_number_t b) const {
@@ -126,14 +127,14 @@ public:
     }
     
     constexpr coin_number_t safe_prod(const coin_number_t a, const coin_number_t b) const {
-        coin_number_t prod = a * b;
         if (a == 0 || b == 0) {
             return 0;
         }
-        else if (a != prod / b) {
+        coin_number_t limit = UINT64_MAX;
+        if (limit / a > b) {
             throw std::out_of_range("");
         }
-        return prod;
+        return a * b;
     }
 };
 
@@ -153,7 +154,7 @@ Moneybag operator *(const uint64_t c, const Moneybag &m) {
 
 class Value {
 private:
-    uint64_t val;
+    Moneybag::coin_number_t val;
 public:
     constexpr Value(): val(0){}
     
