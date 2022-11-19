@@ -32,50 +32,53 @@ public:
 			return true;
 		}
     } 
-	void operator =(const Moneybag &m) {
+    
+	constexpr void operator =(const Moneybag &m) {
 		livre = m.livre;
 		solidus = m.solidus;
 		denier = m.denier;
 	}
-	Moneybag operator +(const Moneybag &m) const {
-		// TODO: overflowy
-		return Moneybag(livre + m.livre, solidus + m.solidus, denier + m.denier);
-	}
-		
-	Moneybag& operator+=(const Moneybag &m){
-		// TODO: overflowy
-		livre += m.livre;
-		solidus += m.solidus;
-		denier += m.denier;
-        return *this;
-    }
-	
-	Moneybag operator -(const Moneybag &m) const {
-		// TODO: sprawdzanie czy nie wychodzi ujemne
-		return Moneybag(livre - m.livre, solidus - m.solidus, denier - m.denier);
+    
+	constexpr Moneybag operator +(const Moneybag &m) const {
+		return Moneybag(safe_sum(livre + m.livre), 
+                        safe_sum(solidus + m.solidus), 
+                        safe_sum(denier + m.denier));
 	}
     
-    Moneybag& operator-=(const Moneybag &m){
-		livre -= m.livre;
-		solidus -= m.solidus;
-		denier -= m.denier;
+	constexpr Moneybag& operator+=(const Moneybag &m){
+		livre = safe_sum(livre, m.livre);
+		solidus = safe_sum(solidus, m.solidus);
+		denier = safe_sum(denier, m.denier);
         return *this;
     }
-	
-	Moneybag operator *(const uint64_t c) const {
-		// TODO: overflowy
-		return Moneybag(livre * c, solidus * c, denier * c);
+    
+	constexpr Moneybag operator -(const Moneybag &m) const {
+		return Moneybag(safe_dif(livre, m.livre), 
+                        safe_dif(solidus, m.solidus), 
+                        safe_dif(denier, m.denier));
 	}
     
-	Moneybag& operator*=(const Moneybag &m){
-		// TODO: overflowy
-		livre *= m.livre;
-		solidus *= m.solidus;
-		denier *= m.denier;
+    constexpr Moneybag& operator-=(const Moneybag &m){
+		livre = safe_dif(livre, m.livre);
+		solidus = safe_dif(solidus, m.solidus);
+		denier = safe_dif(denier, m.denier);
         return *this;
     }
-	
-	bool operator ==(const Moneybag &m) {
+    
+	constexpr Moneybag operator *(const uint64_t c) const {
+		return Moneybag(safe_prod(livre, c),
+                        safe_prod(solidus, c), 
+                        safe_prod(denier, c));
+	}
+    
+	constexpr Moneybag& operator*=(const Moneybag &m){
+		livre = safe_prod(m.livre, c);
+		solidus = safe_prod(m.solidus, c);
+		denier *= safe_prod(m.denier, c);
+        return *this;
+    }
+    
+	constexpr bool operator ==(const Moneybag &m) {
 		if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
 			return true;
 		}
@@ -83,7 +86,8 @@ public:
 			return false;
 		}
 	}
-	std::partial_ordering operator<=>(Moneybag const &m) const {
+    
+	constexpr std::partial_ordering operator<=>(Moneybag const &m) const {
         if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
           return std::partial_ordering::equivalent;
 	    }	
@@ -106,15 +110,40 @@ public:
 		+ std::to_string(denier) + " deniers)";
 		return res;
 	}
+    
+    constexpr coin_number_t safe_sum(coin_number_t a, coin_number_t b) {
+        if (a + b > std::max(a, b)) {
+            throw std::out_of_range("");
+        }
+        return a + b;
+    }
+    
+    constexpr coin_number_t safe_dif(coin_number_t a, coin_number_t b) {
+        if (b > a) {
+            throw std::out_of_range("");
+        }
+        return a - b;
+    }
+    
+    constexpr coin_number_t safe_prod(coin_number_t a, coin_number_t b) {
+        coin_number_t prod = a * b;
+        if (a == 0 || b == 0) {
+            return 0;
+        }
+        else if (a != prod / b) {
+            throw std::out_of_range("");
+        }
+        return prod;
+    }
 };
 
-std::ostream &operator<<(std::ostream &os, Moneybag const &m) { 
+inline std::ostream &operator<<(std::ostream &os, Moneybag const &m) { 
     return os << m.toString();
 }
 
-const Moneybag Livre{1, 0, 0};
-const Moneybag Solidus{0, 1, 0};
-const Moneybag Denier{0, 0, 1};
+constexpr Moneybag Livre{1, 0, 0};
+constexpr Moneybag Solidus{0, 1, 0};
+constexpr Moneybag Denier{0, 0, 1};
 
 
 // żeby działało Moneybag * int (idk czy jest jakiś lepszy sposób)
@@ -133,10 +162,11 @@ public:
     constexpr Value(const Moneybag &m)
     : val(240 * m.livre_number() + 12 * m.solidus_number() + m.denier_number()){}
     
-    void operator =(const Value &v) {
+    constexpr void operator =(const Value &v) {
 		val = v.val;
 	}
-	std::strong_ordering operator<=>(Value const &v) const {
+    
+	constexpr std::strong_ordering operator<=>(Value const &v) const {
         if (val > v.val) {
           return std::strong_ordering::greater;
 	    }
@@ -147,7 +177,8 @@ public:
             return std::strong_ordering::equal;
         }
     }
-	std::strong_ordering operator<=>(uint64_t v) const {
+    
+	constexpr std::strong_ordering operator<=>(uint64_t v) const {
         if (val > v) {
           return std::strong_ordering::greater;
 	    }
@@ -159,7 +190,7 @@ public:
         }
     }
     
-    bool operator ==(const Value &v) {
+    constexpr bool operator ==(const Value &v) {
 		if (val == v.val) {
 			return true;
 		}
@@ -168,7 +199,7 @@ public:
 		}
 	}
     
-    bool operator ==(uint64_t v) {
+    constexpr bool operator ==(uint64_t v) {
 		if (val == v) {
 			return true;
 		}
