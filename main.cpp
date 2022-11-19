@@ -54,11 +54,26 @@ public:
 		// TODO: sprawdzanie czy nie wychodzi ujemne
 		return Moneybag(livre - m.livre, solidus - m.solidus, denier - m.denier);
 	}
+    
+    Moneybag& operator-=(const Moneybag &m){
+		livre -= m.livre;
+		solidus -= m.solidus;
+		denier -= m.denier;
+        return *this;
+    }
 	
 	Moneybag operator *(const uint64_t c) const {
 		// TODO: overflowy
 		return Moneybag(livre * c, solidus * c, denier * c);
 	}
+    
+	Moneybag& operator*=(const Moneybag &m){
+		// TODO: overflowy
+		livre *= m.livre;
+		solidus *= m.solidus;
+		denier *= m.denier;
+        return *this;
+    }
 	
 	bool operator ==(const Moneybag &m) {
 		if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
@@ -69,25 +84,13 @@ public:
 		}
 	}
 	std::partial_ordering operator<=>(Moneybag const &m) const {
-        if (livre > m.livre && denier >= m.denier && solidus >= m.solidus) {
-          return std::partial_ordering::greater;
-	    }
-	    else if (livre >= m.livre && denier > m.denier && solidus >= m.solidus) {
-          return std::partial_ordering::greater;
-	    }
-        else if (livre >= m.livre && denier >= m.denier && solidus > m.solidus) {
-          return std::partial_ordering::greater;
-	    }
-        else if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
-          return std::strong_ordering::equal;
+        if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
+          return std::partial_ordering::equivalent;
 	    }	
-        if (livre < m.livre && denier <= m.denier && solidus <= m.solidus) {
-          return std::partial_ordering::less;
+        else if (livre >= m.livre && denier >= m.denier && solidus >= m.solidus) {
+          return std::partial_ordering::greater;
 	    }
-	    else if (livre <= m.livre && denier < m.denier && solidus <= m.solidus) {
-          return std::partial_ordering::less;
-	    }
-        else if (livre <= m.livre && denier <= m.denier && solidus < m.solidus) {
+	    else if (livre <= m.livre && denier <= m.denier && solidus <= m.solidus) {
           return std::partial_ordering::less;
 	    }
 	    else {
@@ -109,11 +112,72 @@ std::ostream &operator<<(std::ostream &os, Moneybag const &m) {
     return os << m.toString();
 }
 
-const Moneybag Livre = Moneybag(1, 0, 0);
-const Moneybag Solidus = Moneybag(0, 1, 0);
-const Moneybag Denier = Moneybag(0, 0, 1);
+const Moneybag Livre{1, 0, 0};
+const Moneybag Solidus{0, 1, 0};
+const Moneybag Denier{0, 0, 1};
+
 
 // żeby działało Moneybag * int (idk czy jest jakiś lepszy sposób)
 Moneybag operator *(const uint64_t c, const Moneybag &m) {
 	return Moneybag(m.livre_number() * c,  m.solidus_number() * c, m.denier_number() * c);
 }
+
+class Value {
+private:
+    uint64_t val;
+public:
+    constexpr Value(): val(0){}
+    
+    constexpr Value(uint64_t v): val(v){}
+    
+    constexpr Value(const Moneybag &m)
+    : val(240 * m.livre_number() + 12 * m.solidus_number() + m.denier_number()){}
+    
+    void operator =(const Value &v) {
+		val = v.val;
+	}
+	std::strong_ordering operator<=>(Value const &v) const {
+        if (val > v.val) {
+          return std::strong_ordering::greater;
+	    }
+        else if (val < v.val) {
+            return std::strong_ordering::less;
+        }
+        else {
+            return std::strong_ordering::equal;
+        }
+    }
+	std::strong_ordering operator<=>(uint64_t v) const {
+        if (val > v) {
+          return std::strong_ordering::greater;
+	    }
+        else if (val < v) {
+            return std::strong_ordering::less;
+        }
+        else {
+            return std::strong_ordering::equal;
+        }
+    }
+    
+    bool operator ==(const Value &v) {
+		if (val == v.val) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+    
+    bool operator ==(uint64_t v) {
+		if (val == v) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+    
+    explicit operator std::string() {
+        return std::to_string(val);
+    }
+};
