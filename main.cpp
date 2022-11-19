@@ -162,15 +162,15 @@ public:
     
     constexpr Value(uint64_t v): val(v){}
 
-   constexpr Value(const Moneybag &m):
-        val(Moneybag::safe_sum (
+   constexpr Value(const Moneybag &m)
+    : val(Moneybag::safe_sum (
                 Moneybag::safe_sum (
-                    Moneybag::safe_prod (240, m.livre_number()),
-                    Moneybag::safe_prod (12, m.solidus_number())
-                ),
+                      Moneybag::safe_prod (240, m.livre_number()),
+                      Moneybag::safe_prod (12, m.solidus_number())
+                      ),
                 m.denier_number()
-            )
-        ){}
+                )
+      ){}
 
     constexpr void operator =(const Value &v) {
 		val = v.val;
