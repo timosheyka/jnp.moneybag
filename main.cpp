@@ -40,9 +40,9 @@ public:
 	}
     
 	constexpr Moneybag operator +(const Moneybag &m) const {
-		return Moneybag(safe_sum(livre + m.livre), 
-                        safe_sum(solidus + m.solidus), 
-                        safe_sum(denier + m.denier));
+		return Moneybag(safe_sum(livre, m.livre), 
+                        safe_sum(solidus, m.solidus), 
+                        safe_sum(denier, m.denier));
 	}
     
 	constexpr Moneybag& operator+=(const Moneybag &m){
@@ -71,10 +71,10 @@ public:
                         safe_prod(denier, c));
 	}
     
-	constexpr Moneybag& operator*=(const Moneybag &m){
-		livre = safe_prod(m.livre, c);
-		solidus = safe_prod(m.solidus, c);
-		denier *= safe_prod(m.denier, c);
+	constexpr Moneybag& operator*=(const coin_number_t c){
+		livre = safe_prod(livre, c);
+		solidus = safe_prod(solidus, c);
+		denier *= safe_prod(denier, c);
         return *this;
     }
     
@@ -111,21 +111,21 @@ public:
 		return res;
 	}
     
-    constexpr coin_number_t safe_sum(coin_number_t a, coin_number_t b) {
+    constexpr coin_number_t safe_sum(const coin_number_t a, const coin_number_t b) const {
         if (a + b > std::max(a, b)) {
             throw std::out_of_range("");
         }
         return a + b;
     }
     
-    constexpr coin_number_t safe_dif(coin_number_t a, coin_number_t b) {
+    constexpr coin_number_t safe_dif(const coin_number_t a, const coin_number_t b) const {
         if (b > a) {
             throw std::out_of_range("");
         }
         return a - b;
     }
     
-    constexpr coin_number_t safe_prod(coin_number_t a, coin_number_t b) {
+    constexpr coin_number_t safe_prod(const coin_number_t a, const coin_number_t b) const {
         coin_number_t prod = a * b;
         if (a == 0 || b == 0) {
             return 0;
@@ -159,6 +159,14 @@ public:
     
     constexpr Value(uint64_t v): val(v){}
     
+    
+   // TODO: overflowy tutaj 
+   /* constexpr Value(const Moneybag &m)
+    : val(Moneybag::safe_sum(Moneybag::safe_sum(Moneybag::safe_prod(240, m.livre_number()), 
+                   Moneybag::safe_prod(12, m.solidus_number())), 
+                   m.denier_number() )){}
+    */
+                   
     constexpr Value(const Moneybag &m)
     : val(240 * m.livre_number() + 12 * m.solidus_number() + m.denier_number()){}
     
