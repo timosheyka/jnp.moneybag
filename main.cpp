@@ -6,7 +6,6 @@
 class Moneybag {
 public:
     typedef uint64_t coin_number_t;
-    
 private:
 	coin_number_t livre;	
     coin_number_t solidus;
@@ -58,7 +57,7 @@ public:
                         safe_dif(denier, m.denier));
 	}
     
-    constexpr Moneybag& operator-=(const Moneybag &m){
+    constexpr Moneybag& operator -=(const Moneybag &m){
 		livre = safe_dif(livre, m.livre);
 		solidus = safe_dif(solidus, m.solidus);
 		denier = safe_dif(denier, m.denier);
@@ -71,7 +70,7 @@ public:
                         safe_prod(denier, c));
 	}
     
-	constexpr Moneybag& operator*=(const coin_number_t c){
+	constexpr Moneybag& operator *=(const coin_number_t c){
 		livre = safe_prod(livre, c);
 		solidus = safe_prod(solidus, c);
 		denier *= safe_prod(denier, c);
@@ -134,7 +133,7 @@ public:
             return 0;
         }
         coin_number_t limit = UINT64_MAX;
-        if (limit / a > b) {
+        if (limit / a < b) {
             throw std::out_of_range("");
         }
         return a * b;
@@ -172,10 +171,6 @@ public:
                 m.denier_number()
                 )
     ){}
-    /*
-    constexpr Value(const Moneybag &m)
-    : val(240 * m.livre_number() + 12 * m.solidus_number() + m.denier_number()){}
-    */
 
     constexpr void operator =(const Value &v) {
 		val = v.val;
