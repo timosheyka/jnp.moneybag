@@ -1,3 +1,12 @@
+/**
+ * University of Warsaw
+ * JNP 2022/2023, task 3
+ *
+ * Authors :
+ *  Maja Tkaczyk mt438772
+ *  Tsimafei Lukashevich tl439668
+ */
+
 #ifndef MONEYBAG_H
 #define MONEYBAG_H
 
@@ -8,9 +17,8 @@
 class Moneybag {
 public:
     typedef uint64_t coin_number_t;
-    
 private:
-	coin_number_t livre;	
+	coin_number_t livre;
     coin_number_t solidus;
     coin_number_t denier;	
 public: 
@@ -20,9 +28,15 @@ public:
 	constexpr Moneybag(const Moneybag &m) 
 	    : livre(m.livre), solidus(m.solidus), denier(m.denier){}
 
-    constexpr int livre_number() const { return livre; }
-    constexpr int solidus_number() const { return solidus; }
-    constexpr int denier_number() const { return denier; }
+    constexpr int livre_number() const {
+        return livre;
+    }
+    constexpr int solidus_number() const {
+        return solidus;
+    }
+    constexpr int denier_number() const {
+        return denier;
+    }
     
 	explicit operator bool() const {
 		if (livre == 0 && denier == 0 && solidus == 0) {
@@ -33,7 +47,7 @@ public:
 		}
     } 
     
-    constexpr Moneybag &operator=(const Moneybag &m) {
+    constexpr Moneybag &operator =(const Moneybag &m) {
         livre = m.livre;
         solidus = m.solidus;
         denier = m.denier;
@@ -42,11 +56,11 @@ public:
     
 	constexpr Moneybag operator +(const Moneybag &m) const {
 		return Moneybag(safe_sum(livre, m.livre), 
-                        safe_sum(solidus, m.solidus), 
+                        safe_sum(solidus, m.solidus),
                         safe_sum(denier, m.denier));
 	}
     
-	constexpr Moneybag& operator+=(const Moneybag &m){
+	constexpr Moneybag& operator +=(const Moneybag &m){
 		livre = safe_sum(livre, m.livre);
 		solidus = safe_sum(solidus, m.solidus);
 		denier = safe_sum(denier, m.denier);
@@ -59,7 +73,7 @@ public:
                         safe_dif(denier, m.denier));
 	}
     
-    constexpr Moneybag& operator-=(const Moneybag &m){
+    constexpr Moneybag& operator -=(const Moneybag &m){
 		livre = safe_dif(livre, m.livre);
 		solidus = safe_dif(solidus, m.solidus);
 		denier = safe_dif(denier, m.denier);
@@ -73,7 +87,7 @@ public:
 	}
     
     
-	constexpr Moneybag& operator*=(const coin_number_t c){
+	constexpr Moneybag& operator *=(const coin_number_t c){
 		livre = safe_prod(livre, c);
 		solidus = safe_prod(solidus, c);
 		denier *= safe_prod(denier, c);
@@ -89,7 +103,7 @@ public:
 		}
 	}
     
-	constexpr std::partial_ordering operator<=>(Moneybag const &m) const {
+	constexpr std::partial_ordering operator <=>(Moneybag const &m) const {
         if (livre == m.livre && denier == m.denier && solidus == m.solidus) {
           return std::partial_ordering::equivalent;
 	    }	
@@ -134,8 +148,8 @@ public:
         if (a == 0 || b == 0) {
             return 0;
         }
+
         coin_number_t limit = UINT64_MAX;
-        
         if (limit / b < a) {
             throw std::out_of_range("");
         }
@@ -143,7 +157,7 @@ public:
     }
 };
 
-inline std::ostream &operator<<(std::ostream &os, Moneybag const &m) { 
+inline std::ostream &operator <<(std::ostream &os, Moneybag const &m) {
     return os << m.toString();
 }
 
@@ -171,14 +185,14 @@ public:
                       ),
                 m.denier_number()
                 )
-    ){}
+       ){}
     
-    constexpr Value &operator=(const Value &v) {
+    constexpr Value &operator =(const Value &v) {
         val = v.val;
         return *this;
     }
     
-	constexpr std::strong_ordering operator<=>(Value const &v) const {
+	constexpr std::strong_ordering operator <=>(Value const &v) const {
         if (val > v.val) {
           return std::strong_ordering::greater;
 	    }
@@ -190,7 +204,7 @@ public:
         }
     }
     
-	constexpr std::strong_ordering operator<=>(uint64_t v) const {
+	constexpr std::strong_ordering operator <=>(uint64_t v) const {
         if (val > v) {
           return std::strong_ordering::greater;
 	    }
