@@ -2,7 +2,7 @@
  * University of Warsaw
  * JNP 2022/2023, task 3
  *
- * Authors :
+ * Authors:
  * Maja Tkaczyk mt438772
  * Tsimafei Lukashevich tl439668
  */
